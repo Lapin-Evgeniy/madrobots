@@ -1,7 +1,6 @@
 <?php
 
 use Bitrix\Main\Loader;
-use Reviews\ReviewsHelper;
 
 Class lapin_review extends CModule
 {
@@ -15,9 +14,9 @@ Class lapin_review extends CModule
     public function installEvent()
     {
         $eventManager = \Bitrix\Main\EventManager::getInstance();
-        $eventManager->registerEventHandlerCompatible(
+        $eventManager->registerEventHandler(
             'lapin.review',
-            '\Lapin\Review\Review::onAfterAdd',
+            '\Lapin\Review\Tables\Review::onAfterAdd',
             $this->MODULE_ID,
             '\Lapin\Review\Handlers\ReviewEventHandler',
             'onAfterAdd'
@@ -29,7 +28,7 @@ Class lapin_review extends CModule
         $eventManager = \Bitrix\Main\EventManager::getInstance();
         $eventManager->unRegisterEventHandler(
             'lapin.review',
-            '\Lapin\Review\Review::onAfterAdd',
+            '\Lapin\Review\Tables\Review::onAfterAdd',
             $this->MODULE_ID,
             '\Lapin\Review\Handlers\ReviewEventHandler',
             'onAfterAdd'
@@ -39,16 +38,16 @@ Class lapin_review extends CModule
     public function installDB()
     {
         $connection = \Bitrix\Main\Application::getConnection();
-        \Lapin\review\entities\ReviewTable::getEntity()->createDbTable();
-        \Lapin\review\entities\RaitingTable::getEntity()->createDbTable();
+        \Lapin\Review\Tables\ReviewTable::getEntity()->createDbTable();
+        \Lapin\Review\Tables\RaitingTable::getEntity()->createDbTable();
     }
 
     public function unInstallDB()
     {
         $connection = \Bitrix\Main\Application::getConnection();
 
-        $connection->dropTable(\Lapin\review\entities\ReviewTable::getTableName());
-        $connection->dropTable(\Lapin\review\entities\RaitingTable::getTableName());
+        $connection->dropTable(\Lapin\Review\Tables\ReviewTable::getTableName());
+        $connection->dropTable(\Lapin\Review\Tables\RaitingTable::getTableName());
     }
 
     function InstallFiles()

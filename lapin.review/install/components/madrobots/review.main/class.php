@@ -6,44 +6,60 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 use Bitrix\Main\Application;
 use Bitrix\Main\Loader;
 
-
 class ReviewsComponent extends CBitrixComponent
 {
-    public function executeComponent()
+    protected $request;
+
+    public function __construct($component = null)
     {
         global $USER;
+        parent::__construct($component);
+        if(!Loader::includeModule("lapin.review")) {
+            throw new Exception('модуль lapin.review не установлен');
+        }
 
-        if($USER->IsAuthorized()) {
+        $this->request = Application::getInstance()->getContext()->getRequest();
+        $this->user = $USER;
+    }
+
+    public function executeComponent()
+    {
+        if($this->user->IsAuthorized()) {
             #TODO deny entry
         }
 
-        $request = Application::getInstance()->getContext()->getRequest();
-        $text = $request->getPost('text');
-        $product_id = $this->arParams['ELEMENT_ID'];
-        $raiting = $request->getPost('raiting');
-
-        if($request->getPost('send')) {
-            if(Loader::includeModule("lapin.review")) {
-
-                $result = \Lapin\review\entities\ReviewTable::add([
-                    'user_id' => $USER->GetID(),
-                    'product_id' => $product_id,
-                    'raiting' => $raiting,
-                    'text' => $text,
-                ]);
-
-                if (!$result->isSuccess())
-                {
-                    $this->arResult['formErrors'] = $result->getErrorMessages();
-                }
-                else {
-                    if($result) {
-                        $this->arResult['formSucces'] = true;
-                    }
-                }
-            }
+        if($this->request->getPost('send')) {
+            $validatedData = $this->getValidated($this->getRequest());
+            $this->createReview($validatedData);
         }
 
         $this->includeComponentTemplate();
+    }
+
+    public function getRequest()
+    {
+        return [
+            'userId' => $this->user->GetID(),
+            'text' => $this->request->getPost('text'),
+            'raiting' => $this->request->getPost('raiting'),
+            'productId' => $this->arParams['ELEMENT_ID']
+        ];
+    }
+
+    public function createReview($request)
+    {
+        $result = \Lapin\Review\Tables\ReviewTable::add($request);
+        if ($result->isSuccess()) {
+            $this->arResult['formSucces'] = true;
+        }
+        else {
+            $this->arResult['formErrors'] = $result->getErrorMessages();
+        }
+    }
+
+    public function getValidated($data) : array
+    {
+        #TODO validation
+        return $data;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Lapin\review\entities;
+namespace Lapin\Review\Tables;
 
 use Bitrix\Main\Entity;
 
@@ -17,11 +17,11 @@ class RaitingTable extends Entity\DataManager
                 'primary' => true,
                 'autocomplete' => true,
             ]),
-            new Entity\IntegerField('product_id', [
+            new Entity\IntegerField('productId', [
                 'required' => true,
                 'unique' => true,
             ]),
-            new Entity\FloatField('average_rating', [
+            new Entity\FloatField('averageRating', [
                 'required' => true,
             ]),
         ];

@@ -1,8 +1,7 @@
 <?php
-namespace Lapin\review\entities;
+namespace Lapin\Review\Tables;
 
 use Bitrix\Main\Entity;
-use Lapin\Review\Repository\RaitingRepository;
 
 class ReviewTable extends Entity\DataManager
 {
@@ -18,10 +17,10 @@ class ReviewTable extends Entity\DataManager
                 'primary' => true,
                 'autocomplete' => true,
             ]),
-            new Entity\IntegerField('user_id', [
+            new Entity\IntegerField('userId', [
                 'required' => true,
             ]),
-            new Entity\IntegerField('product_id', [
+            new Entity\IntegerField('productId', [
                 'required' => true,
             ]),
             new Entity\BooleanField('published', [
@@ -36,6 +35,4 @@ class ReviewTable extends Entity\DataManager
             ])
         ];
     }
-
-
 }

@@ -1,27 +1,26 @@
 <?php
 
-namespace Lapin\review\repository;
+namespace Lapin\Review\Services;
 
-use Bitrix\Main\Entity;
-use Lapin\review\entities\RaitingTable;
+use Lapin\Review\Tables\RaitingTable;
 
-class RaitingRepository
+class RaitingService
 {
     public static function updateOrCreate($productId, $raitingNumber)
     {
         $raiting = RaitingTable::getList([
             'select' => ['id'],
-            'filter' => ['product_id' => $productId],
+            'filter' => ['productId' => $productId],
         ])->fetch();
 
         if ($raiting) {
             RaitingTable::update($raiting['id'], [
-                'average_rating' => $raitingNumber,
+                'averageRating' => $raitingNumber,
             ]);
         } else {
             RaitingTable::add([
-                'product_id' => $productId,
-                'average_rating' => $raitingNumber,
+                'productId' => $productId,
+                'averageRating' => $raitingNumber,
             ]);
         }
     }
